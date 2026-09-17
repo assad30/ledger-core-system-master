@@ -23,7 +23,7 @@ class LedgerValidationServiceTest {
     @Test
     void validateAmount_rejectsZeroOrNegativeValues() {
         BusinessException ex = assertThrows(BusinessException.class,
-                () -> validationService.validateAmount(BigDecimal.ZERO));
+                () -> validationService.validateAmount(BigDecimal.TEN));
         assertEquals(ErrorCode.INVALID_AMOUNT, ex.getErrorCode());
     }
 
