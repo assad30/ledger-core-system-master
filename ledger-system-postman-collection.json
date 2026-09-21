@@ -1,0 +1,105 @@
+{
+  "info": {
+    "name": "Ledger Core System API",
+    "description": "Postman collection for the Ledger Core System backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081", "type": "string" },
+    { "key": "userAccountId", "value": "1", "type": "string" },
+    { "key": "merchantAccountId", "value": "2", "type": "string" },
+    { "key": "accountId", "value": "1", "type": "string" },
+    { "key": "transactionId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Payment - Process Payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userAccountId\": 1,\n  \"merchantAccountId\": 2,\n  \"amount\": 100.00,\n  \"fee\": 10.00,\n  \"idempotencyKey\": \"payment-{{timestamp}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions/payment",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "payment"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Refund - Process Refund",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"originalTransactionId\": 1,\n  \"amount\": 50.00,\n  \"idempotencyKey\": \"refund-{{timestamp}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions/refund",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "refund"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Transfer - Transfer Funds",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fromAccountId\": 1,\n  \"toAccountId\": 2,\n  \"amount\": 25.00,\n  \"idempotencyKey\": \"transfer-{{timestamp}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions/transfer",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "transfer"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Settlement - Settle Merchant",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"merchantAccountId\": 2,\n  \"amount\": 75.00,\n  \"idempotencyKey\": \"settlement-{{timestamp}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions/settlement",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "settlement"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ledger - Get Account Ledger",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/accounts/{{accountId}}/ledger",
+          "host": ["{{baseUrl}}"],
+          "path": ["accounts", "{{accountId}}", "ledger"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
