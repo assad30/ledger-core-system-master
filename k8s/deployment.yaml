@@ -21,19 +21,19 @@ spec:
           - name: ledger-core-container
             image: assadburiro30/docker-jenkins-ledger-system-integrations:latest
 
-          imagePullPolicy: Always
+            imagePullPolicy: Always
 
-          ports:
-            - containerPort: 8081
+            ports:
+              - containerPort: 8081
 
-          env:
+            env:
             - name: SERVER_PORT
               value: "8081"
 
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "250m"
 
             limits:
               memory: "512Mi"
