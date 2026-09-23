@@ -13,7 +13,7 @@ class LedgerSystemApplicationTests {
 
 	@Test
 	public void contextLoads() {
-		logger.info("Test case execution started with Assad..");
+		logger.info("Test case execution started with Assadullah Buriro..");
 		Assertions.assertTrue(true);
 	}
 
