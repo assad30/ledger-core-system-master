@@ -20,7 +20,7 @@ spec:
       containers:
         - name: ledger-core-container
 
-          image: assadburiro30/docker-jenkins-ledger-system-integrations:latest
+          image: assadburiro30/ledger-core-system:latest
 
           imagePullPolicy: Always
 

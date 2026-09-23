@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "assadburiro30/docker-jenkins-ledger-system-integrations"
+        DOCKER_IMAGE = "assadburiro30/ledger-core-system"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
@@ -63,14 +63,15 @@ pipeline {
                 bat 'kubectl rollout status deployment/ledger-core-system --timeout=120s'
             }
         }
-
         stage('Verify') {
             steps {
-                echo 'Checking Kubernetes resources...'
+                echo 'Checking Kubernetes deployment...'
 
                 bat 'kubectl get deployment ledger-core-system'
                 bat 'kubectl get pods'
                 bat 'kubectl get services'
+
+                bat 'kubectl rollout status deployment/ledger-core-system --timeout=120s'
             }
         }
     }
