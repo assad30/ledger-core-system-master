@@ -1,7 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: ledger-core-system
+
 spec:
   replicas: 1
 
@@ -17,10 +19,14 @@ spec:
     spec:
       containers:
         - name: ledger-core-container
+
           image: assadburiro30/docker-jenkins-ledger-system-integrations:latest
+
           imagePullPolicy: Always
+
           ports:
             - containerPort: 8081
+
           env:
             - name: SERVER_PORT
               value: "8081"
