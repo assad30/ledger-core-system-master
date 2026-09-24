@@ -16,15 +16,14 @@ pipeline {
             }
         }
 
-        stage('Build & Unit Test') {
+        stage('Build Application') {
             steps {
-                echo 'Building application and running unit tests...'
-
+                echo 'Building Spring Boot application...'
                 bat 'mvn clean install'
             }
         }
 
-        stage('Docker Build') {
+        stage('Build Docker Image') {
             steps {
                 echo "Building Docker image ${DOCKER_IMAGE}:${IMAGE_TAG}"
 
@@ -34,29 +33,14 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-
                 echo "Pushing Docker image ${DOCKER_IMAGE}:${IMAGE_TAG}"
 
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub-credentials',
-                        usernameVariable: 'DOCKER_USERNAME',
-                        passwordVariable: 'DOCKER_PASSWORD'
-                    )
-                ]) {
-
-                    bat 'docker login -u "%DOCKER_USERNAME%" -p "%DOCKER_PASSWORD%"'
-
-                    bat "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
-
-                    bat 'docker logout'
-                }
+                bat "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
             }
         }
 
         stage('Kubernetes Deploy') {
             steps {
-
                 echo 'Applying Kubernetes configuration...'
 
                 bat 'kubectl apply -f k8s/deployment.yaml'
@@ -66,8 +50,7 @@ pipeline {
 
         stage('Update Image') {
             steps {
-
-                echo "Updating Kubernetes image..."
+                echo "Updating Kubernetes deployment image..."
 
                 bat "kubectl set image deployment/ledger-core-system ledger-core-container=${DOCKER_IMAGE}:${IMAGE_TAG}"
             }
@@ -75,22 +58,17 @@ pipeline {
 
         stage('Rollout') {
             steps {
-
                 echo 'Waiting for deployment rollout...'
 
                 bat 'kubectl rollout status deployment/ledger-core-system --timeout=120s'
             }
         }
-
         stage('Verify') {
             steps {
-
                 echo 'Checking Kubernetes deployment...'
 
                 bat 'kubectl get deployment ledger-core-system'
-
                 bat 'kubectl get pods'
-
                 bat 'kubectl get services'
 
                 bat 'kubectl rollout status deployment/ledger-core-system --timeout=120s'
@@ -99,17 +77,15 @@ pipeline {
     }
 
     post {
-
         success {
             echo '========================================'
-            echo 'Build, Tests and Deployment SUCCESSFUL!'
+            echo 'Deployment completed successfully!'
             echo '========================================'
         }
 
         failure {
             echo '========================================'
-            echo 'Pipeline FAILED!'
-            echo 'Application was NOT deployed.'
+            echo 'Deployment failed!'
             echo '========================================'
         }
     }
