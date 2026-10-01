@@ -69,6 +69,7 @@ public class TransferServiceImpl implements TransferService {
 
         IdempotencyKey key = new IdempotencyKey();
         key.setKeyValue(transferRequest.idempotencyKey());
+        key.setStatus("COMPLETED");
         idempotencyRepository.save(key);
 
         return new TransactionResponse(tx.getTransactionReference(), "TRANSFER_SUCCESS");
