@@ -31,6 +31,22 @@ pipeline {
             }
         }
 
+        stage('Docker Login') {
+            steps {
+                echo 'Logging in to Docker Hub...'
+
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    bat 'docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%'
+                }
+            }
+        }
+
         stage('Push Docker Image') {
             steps {
                 echo "Pushing Docker image ${DOCKER_IMAGE}:${IMAGE_TAG}"
@@ -63,6 +79,7 @@ pipeline {
                 bat 'kubectl rollout status deployment/ledger-core-system --timeout=120s'
             }
         }
+
         stage('Verify') {
             steps {
                 echo 'Checking Kubernetes deployment...'
@@ -70,7 +87,6 @@ pipeline {
                 bat 'kubectl get deployment ledger-core-system'
                 bat 'kubectl get pods'
                 bat 'kubectl get services'
-
                 bat 'kubectl rollout status deployment/ledger-core-system --timeout=120s'
             }
         }
