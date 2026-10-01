@@ -74,8 +74,7 @@ pipeline {
 
         stage('Rollout') {
             steps {
-                echo 'Waiting for deployment rollout...'
-
+                echo 'Waiting for deployment rollout'
                 bat 'kubectl rollout status deployment/ledger-core-system --timeout=120s'
             }
         }
