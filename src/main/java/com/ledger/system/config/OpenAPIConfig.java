@@ -19,6 +19,6 @@ public class OpenAPIConfig {
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
                         .description("Ledger System Wiki Documentation")
-                        .url("https://example.com/docs"));
+                        .url("https://ledger.com/docs"));
     }
 }
