@@ -14,6 +14,13 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Set Build Information') {
+            steps {
+                script {
+                    currentBuild.displayName = "#${BUILD_NUMBER} - ${new Date().format('H:mm dd-MM-yyyy')}"
+                }
+            }
+        }
         stage('Build Application') {
             steps {
                 echo 'Building Spring Boot application...'
