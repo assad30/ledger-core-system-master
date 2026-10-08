@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         DOCKER_IMAGE = "assadburiro30/ledger-core-system"
-        IMAGE_TAG = "${BUILD_NUMBER}"
+        IMAGE_TAG = "${BUILD_NUMBER}-${new Date().format('H_mm-dd-MM-yyyy')}"
     }
     stages {
         stage('Checkout') {
