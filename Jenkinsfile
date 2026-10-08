@@ -1,40 +1,34 @@
 pipeline {
-
     agent any
-
+    tools {
+        jdk 'JDK21'
+    }
     environment {
         DOCKER_IMAGE = "assadburiro30/ledger-core-system"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
-
     stages {
-
         stage('Checkout') {
             steps {
                 echo 'Checking out source code...'
                 checkout scm
             }
         }
-
         stage('Build Application') {
             steps {
                 echo 'Building Spring Boot application...'
                 bat 'mvn clean install'
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image ${DOCKER_IMAGE}:${IMAGE_TAG}"
-
                 bat "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} ."
             }
         }
-
         stage('Docker Login') {
             steps {
                 echo 'Logging in to Docker Hub...'
-
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'dockerhub-credentials',
@@ -46,15 +40,12 @@ pipeline {
                 }
             }
         }
-
         stage('Push Docker Image') {
             steps {
                 echo "Pushing Docker image ${DOCKER_IMAGE}:${IMAGE_TAG}"
-
                 bat "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
             }
         }
-
         stage('Kubernetes Deploy') {
             steps {
                 echo 'Applying Kubernetes configuration...'
@@ -63,7 +54,6 @@ pipeline {
                 bat 'kubectl apply -f k8s/service.yaml'
             }
         }
-
         stage('Update Image') {
             steps {
                 echo "Updating Kubernetes deployment image..."
@@ -71,14 +61,13 @@ pipeline {
                 bat "kubectl set image deployment/ledger-core-system ledger-core-container=${DOCKER_IMAGE}:${IMAGE_TAG}"
             }
         }
-
         stage('Rollout') {
             steps {
                 echo 'Waiting for deployment rollout'
+
                 bat 'kubectl rollout status deployment/ledger-core-system --timeout=120s'
             }
         }
-
         stage('Verify') {
             steps {
                 echo 'Checking Kubernetes deployment...'
@@ -90,14 +79,12 @@ pipeline {
             }
         }
     }
-
     post {
         success {
             echo '========================================'
             echo 'Deployment completed successfully!'
             echo '========================================'
         }
-
         failure {
             echo '========================================'
             echo 'Deployment failed!'
